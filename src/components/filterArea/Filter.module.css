@@ -1,0 +1,26 @@
+.container {
+	display: flex;
+	padding: 10px 20px;
+	align-items: center;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.title {
+	flex: 0 0 200px;
+}
+
+.clear {
+	cursor: pointer;
+	user-select: none;
+	margin-top: 10px;
+}
+
+.clear::after {
+	content: '';
+	position: relative;
+	top: -3px;
+	display: block;
+	height: 2px;
+	width: transparent;
+	background: rgba(0, 0, 0, 0.5);
+}

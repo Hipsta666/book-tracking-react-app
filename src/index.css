@@ -1,0 +1,29 @@
+@import-normalize;
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Roboto:wght@300;400;500&display=swap');
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background: #fff;
+	font-family: 'Architects Daughter', cursive;
+	font-size: 22px;
+	overflow: scroll;
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+body {
+	margin: 0;
+	padding: 0;
+}

@@ -1,0 +1,56 @@
+.container {
+	padding: 20px 10px 10px 20px;
+}
+
+.container:not(:last-child) {
+	border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	margin-bottom: 20px;
+}
+
+.headerLeft {
+	flex: 0 1 70%;
+}
+
+.author {
+	margin-bottom: 10px;
+}
+
+.title {
+	font-weight: 600;
+}
+
+.headerRight {
+	display: flex;
+	align-items: center;
+}
+
+.actionName {
+	display: flex;
+	user-select: none;
+	cursor: pointer;
+	margin-right: 5px;
+}
+
+.actionName span {
+	margin-right: 5px;
+}
+.actionName span::after {
+	content: '';
+	position: relative;
+	top: -3px;
+	display: block;
+	height: 2px;
+	width: transparent;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+.description {
+	font-size: 20px;
+	margin-bottom: 20px;
+}

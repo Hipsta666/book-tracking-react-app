@@ -1,0 +1,59 @@
+ul {
+	padding: 0;
+	margin: 0;
+}
+li {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.App {
+	display: flex;
+	justify-content: center;
+}
+
+.tabs {
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	width: 800px;
+	margin: 25px 10px 0;
+	border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.tabList {
+	user-select: none;
+	display: flex;
+}
+
+.tab {
+	padding: 10px;
+	flex: 1 1 100px;
+	text-align: center;
+	background: #f1f1f1;
+	cursor: pointer;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+	position: relative;
+	outline: none;
+}
+
+.tab:not(:last-child) {
+	border-right: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.selectedTab {
+	background: #fff;
+	border-bottom: 2px solid transparent;
+}
+
+.tabPanel {
+	flex: 1 1 auto;
+}
+
+.content {
+	background: #fff;
+	width: 100%;
+	height: 100%;
+	display: none;
+}
