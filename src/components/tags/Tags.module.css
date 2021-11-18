@@ -1,0 +1,22 @@
+.tags {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.tag {
+	border: 2px solid rgba(0, 0, 0, 0.5);
+	padding: 2px 8px;
+	margin-top: 10px;
+	cursor: pointer;
+}
+
+.tag:not(:last-child) {
+	margin-right: 10px;
+}
+
+.activeFilterTag {
+	background: rgb(161, 193, 230);
+}
