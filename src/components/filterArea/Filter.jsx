@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import classes from './Filter.module.css';
 import tagsClasses from '../tags/Tags.module.css';
 import Context from '../../context';
@@ -23,6 +24,12 @@ const Filter = ({ tags }) => {
 			</div>
 		</div>
 	);
+};
+
+Filter.propTypes = {
+	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+	clearFilters: PropTypes.func.isRequired,
+	deleteFilterTag: PropTypes.func.isRequired,
 };
 
 export default Filter;
