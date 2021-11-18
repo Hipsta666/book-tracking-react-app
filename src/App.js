@@ -10,7 +10,6 @@ import TabBooksContent from './components/tabBooksContent/TabBooksContent';
 function App() {
 	const db = new Localbase('db');
 	db.config.debug = false;
-
 	const [filterTags, setFilterTags] = useState([]);
 
 	const [books, setBooks] = useState({ toRead: [], inProgress: [], done: [] });
