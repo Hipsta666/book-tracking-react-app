@@ -21,8 +21,8 @@ const Tags = ({ tags }) => {
 
 Tags.propTypes = {
 	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
-	toggleFilterTag: PropTypes.func.isRequired,
-	filterTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+	toggleFilterTag: PropTypes.func,
+	filterTags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Tags;

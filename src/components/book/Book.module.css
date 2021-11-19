@@ -1,8 +1,9 @@
 .container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	padding: 20px 10px 10px 20px;
-}
-
-.container:not(:last-child) {
+	height: 280px;
 	border-bottom: 2px solid rgba(0, 0, 0, 0.5);
 }
 
@@ -22,6 +23,7 @@
 }
 
 .title {
+	font-size: 26px;
 	font-weight: 600;
 }
 
@@ -51,6 +53,21 @@
 }
 
 .description {
-	font-size: 20px;
-	margin-bottom: 20px;
+	font-size: 18px;
+	margin-bottom: 10px;
+}
+
+.description p {
+	overflow: hidden;
+	display: -moz-box;
+	-moz-box-orient: vertical;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	line-clamp: 3;
+	box-orient: vertical;
+}
+
+.description p::after {
+	content: '.....';
 }

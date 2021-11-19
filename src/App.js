@@ -3,6 +3,7 @@ import './App.css';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Filter from './components/filterArea/Filter';
 import BOOKS from './10-items.json';
+import BOOKS1 from './30000-items.json';
 import Context from './context';
 import Localbase from 'localbase';
 import TabBooksContent from './components/tabBooksContent/TabBooksContent';

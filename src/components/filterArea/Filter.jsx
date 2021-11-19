@@ -28,8 +28,8 @@ const Filter = ({ tags }) => {
 
 Filter.propTypes = {
 	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
-	clearFilters: PropTypes.func.isRequired,
-	deleteFilterTag: PropTypes.func.isRequired,
+	clearFilters: PropTypes.func,
+	deleteFilterTag: PropTypes.func,
 };
 
 export default Filter;
