@@ -8,35 +8,23 @@ import Context from './context';
 import Localbase from 'localbase';
 import TabBooksContent from './components/tabBooksContent/TabBooksContent';
 
+const filterBooksByState = (items, state) => {
+	const indices = items.filter((item) => item.state === state).map((item) => item.id);
+	return BOOKS.items.filter((book) => {
+		return indices.includes(book.id);
+	});
+};
+
+const db = new Localbase('db');
+db.config.debug = false;
+
 function App() {
-	const db = new Localbase('db');
-	db.config.debug = false;
 	const [filterTags, setFilterTags] = useState([]);
 	const [books, setBooks] = useState({ toRead: [], inProgress: [], done: [] });
-
-	const filterBooksByState = (items, state) => {
-		const indices = items.filter((item) => item.state === state).map((item) => item.id);
-		return BOOKS.items.filter((book) => {
-			return indices.includes(book.id);
-		});
-	};
 
 	const filterBooksToRead = (items) => {
 		return BOOKS.items.filter((book) => ![...filterBooksByState(items, 'inProgress'), ...filterBooksByState(items, 'done')].map((item) => item.id).includes(book.id));
 	};
-
-	useEffect(() => {
-		db.collection('books')
-			.get()
-			.then((items) => {
-				setBooks({
-					toRead: filterBooksToRead(items),
-					inProgress: filterBooksByState(items, 'inProgress'),
-					done: filterBooksByState(items, 'done'),
-				});
-			});
-	}, []);
-
 	const clearFilters = () => {
 		setFilterTags([]);
 	};
@@ -69,6 +57,17 @@ function App() {
 		setBooks({ toRead: [...books.toRead, book], inProgress: [...books.inProgress], done: books.done.filter((item) => item.id !== book.id) });
 	};
 
+	useEffect(() => {
+		db.collection('books')
+			.get()
+			.then((items) => {
+				setBooks({
+					toRead: filterBooksToRead(items),
+					inProgress: filterBooksByState(items, 'inProgress'),
+					done: filterBooksByState(items, 'done'),
+				});
+			});
+	}, []);
 	return (
 		<Context.Provider value={{ toggleFilterTag, deleteFilterTag, clearFilters, filterTags }}>
 			<div className='App'>
