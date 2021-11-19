@@ -18,13 +18,14 @@ const filterBooksByState = (items, state) => {
 const db = new Localbase('db');
 db.config.debug = false;
 
+const filterBooksToRead = (items) => {
+	return BOOKS.items.filter((book) => ![...filterBooksByState(items, 'inProgress'), ...filterBooksByState(items, 'done')].map((item) => item.id).includes(book.id));
+};
+
 function App() {
 	const [filterTags, setFilterTags] = useState([]);
 	const [books, setBooks] = useState({ toRead: [], inProgress: [], done: [] });
 
-	const filterBooksToRead = (items) => {
-		return BOOKS.items.filter((book) => ![...filterBooksByState(items, 'inProgress'), ...filterBooksByState(items, 'done')].map((item) => item.id).includes(book.id));
-	};
 	const clearFilters = () => {
 		setFilterTags([]);
 	};

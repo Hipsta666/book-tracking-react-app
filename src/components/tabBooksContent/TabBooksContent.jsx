@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Book from '../book/Book';
 import Context from '../../context';
+import ReactDOM from 'react-dom';
+import { useVirtual } from 'react-virtual';
 
 const TabBooksContent = ({ books, action, actionLabel }) => {
 	const { filterTags } = useContext(Context);
