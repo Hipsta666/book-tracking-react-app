@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Tags from '../tags/Tags';
 import classes from './Book.module.css';
 
@@ -23,6 +24,12 @@ const Book = ({ book, actionName, transfer }) => {
 			<Tags tags={book.tags} />
 		</div>
 	);
+};
+
+Book.propTypes = {
+	book: PropTypes.object.isRequired,
+	actionName: PropTypes.string.isRequired,
+	transfer: PropTypes.func.isRequired,
 };
 
 export default Book;

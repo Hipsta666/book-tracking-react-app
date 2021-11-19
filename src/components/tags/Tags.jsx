@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import classes from './Tags.module.css';
 import Context from '../../context';
 
@@ -16,6 +17,12 @@ const Tags = ({ tags }) => {
 			})}
 		</div>
 	);
+};
+
+Tags.propTypes = {
+	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+	toggleFilterTag: PropTypes.func,
+	filterTags: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Tags;
