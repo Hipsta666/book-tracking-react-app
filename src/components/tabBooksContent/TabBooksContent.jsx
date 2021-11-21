@@ -1,21 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, memo } from 'react';
 import PropTypes from 'prop-types';
 import Book from '../book/Book';
 import Context from '../../context';
-
 import { useVirtual } from 'react-virtual';
+
+const calcListHeight = (marginBottom) => {
+	return document.documentElement.clientHeight - marginBottom;
+};
 
 const TabBooksContent = ({ books, action, actionLabel }) => {
 	const { filterTags } = useContext(Context);
-	const booksToRender = books.filter((item) => item.tags.filter((tag) => filterTags.includes(tag)).length === filterTags.length);
 	const parentRef = React.useRef();
 
-	const calcListHeight = (marginBottom) => {
-		return filterTags.length === 0 ? document.documentElement.clientHeight - 100 : document.documentElement.clientHeight - 175;
-	};
-
 	const rowVirtualizer = useVirtual({
-		size: booksToRender.length,
+		size: books.length,
 		parentRef,
 	});
 
@@ -43,10 +41,10 @@ const TabBooksContent = ({ books, action, actionLabel }) => {
 								top: 0,
 								left: 0,
 								width: '100%',
-								height: `${booksToRender[virtualRow.index]}px`,
+								height: `${books[virtualRow.index]}px`,
 								transform: `translateY(${virtualRow.start}px)`,
 							}}>
-							<Book book={booksToRender[virtualRow.index]} actionName={actionLabel} key={booksToRender[virtualRow.index].id} transfer={action} />
+							<Book book={books[virtualRow.index]} actionName={actionLabel} key={books[virtualRow.index].id} transfer={action} />
 						</div>
 					))}
 				</div>

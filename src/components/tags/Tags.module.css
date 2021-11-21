@@ -13,6 +13,7 @@
 	margin-top: 10px;
 	cursor: pointer;
 	font-size: 20px;
+	user-select: none;
 }
 
 .tag:not(:last-child) {

@@ -5,8 +5,7 @@ import tagsClasses from '../tags/Tags.module.css';
 import Context from '../../context';
 
 const Filter = ({ tags }) => {
-	const { clearFilters, deleteFilterTag } = useContext(Context);
-
+	const { clearFilterTags, deleteFilterTag } = useContext(Context);
 	return (
 		<div className={classes.container}>
 			<span className={classes.title}>Filters by tags:</span>
@@ -18,7 +17,7 @@ const Filter = ({ tags }) => {
 						</div>
 					);
 				})}
-				<div className={classes.clear} onClick={() => clearFilters()}>
+				<div className={classes.clear} onClick={() => clearFilterTags()}>
 					(clear)
 				</div>
 			</div>
