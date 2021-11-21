@@ -50,7 +50,7 @@ function App() {
 
 	const toggleFilterTag = (tag) => (filterTags.includes(tag) ? deleteFilterTag(tag) : setFilterTags([...filterTags, tag]));
 
-	const getBookByTagFilter = (book) => book.tags.filter((tag) => filterTags.includes(tag)).length === filterTags.length;
+	const getBookByTagFilter = (book) => filterTags.filter((tag) => book.tags.includes(tag)).length === filterTags.length;
 
 	const transferToProgress = (book) => {
 		db.collection('books').add({
