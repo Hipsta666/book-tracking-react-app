@@ -16,24 +16,27 @@ const getIndicesByState = (items, state) => items.filter((item) => item.state ==
 
 function App() {
 	const [filterTags, setFilterTags] = useState([]);
-	const [booksState, setBooksState] = useState([]);
-	let [searchParams, setSearchParams] = useSearchParams({});
+	const [booksStateStorage, setBooksStateStorage] = useState([]);
+	const [searchParams, setSearchParams] = useSearchParams({});
+	const booksStateLength = booksStateStorage.length,
+		booksInProgressLength = getIndicesByState(booksStateStorage, 'inProgress'),
+		booksDoneLength = getIndicesByState(booksStateStorage, 'done');
 
 	const getBooks = () => {
 		db.collection('books')
 			.get()
 			.then((items) => {
-				setBooksState(items);
+				setBooksStateStorage(items);
 			});
 	};
 
 	useEffect(() => {
 		getBooks();
-	}, [setBooksState]);
+	}, [setBooksStateStorage]);
 
 	useEffect(() => {
 		filterTags.length === 0 ? setSearchParams({}) : setSearchParams({ tags: filterTags.join('%') });
-	}, [filterTags]);
+	}, [filterTags, setSearchParams]);
 
 	useEffect(() => {
 		if (searchParams.get('tags')) {
@@ -54,32 +57,32 @@ function App() {
 			...book,
 			state: 'inProgress',
 		});
-		setBooksState([...booksState, { ...book, state: 'inProgress' }]);
+		setBooksStateStorage([...booksStateStorage, { ...book, state: 'inProgress' }]);
 	};
 
 	const transferToDone = (book) => {
 		db.collection('books').doc({ id: book.id }).update({
 			state: 'done',
 		});
-		setBooksState(booksState.map((item) => (item.id === book.id ? { ...item, state: 'done' } : item)));
+		setBooksStateStorage(booksStateStorage.map((item) => (item.id === book.id ? { ...item, state: 'done' } : item)));
 	};
 
 	const transferToRead = (book) => {
 		db.collection('books').doc({ id: book.id }).delete();
-		setBooksState(booksState.filter((item) => item.id !== book.id));
+		setBooksStateStorage(booksStateStorage.filter((item) => item.id !== book.id));
 	};
 
 	const getInProgressBooks = useMemo(() => {
-		return booksState.filter((book) => book.state === 'inProgress' && getBookByTagFilter(book));
-	}, [getIndicesByState(booksState, 'inProgress').length, filterTags]);
+		return booksStateStorage.filter((book) => book.state === 'inProgress' && getBookByTagFilter(book));
+	}, [booksInProgressLength, filterTags, getBookByTagFilter]);
 
 	const getDoneBooks = useMemo(() => {
-		return booksState.filter((book) => book.state === 'done' && getBookByTagFilter(book));
-	}, [getIndicesByState(booksState, 'done').length, filterTags]);
+		return booksStateStorage.filter((book) => book.state === 'done' && getBookByTagFilter(book));
+	}, [booksDoneLength, filterTags, getBookByTagFilter]);
 
 	const getToReadBooks = useMemo(() => {
 		let booksToRead = [];
-		const map = booksState.reduce((acc, book) => {
+		const map = booksStateStorage.reduce((acc, book) => {
 			acc[book.id] = 1;
 			return acc;
 		}, {});
@@ -89,16 +92,16 @@ function App() {
 		});
 
 		return booksToRead;
-	}, [booksState.length, filterTags]);
+	}, [booksStateLength, getBookByTagFilter]);
 
 	return (
 		<Context.Provider value={{ toggleFilterTag, deleteFilterTag, clearFilterTags, filterTags }}>
 			<div className='App'>
 				<Tabs className='tabs' selectedTabClassName='selectedTab'>
 					<TabList className='tabList'>
-						<Tab className='tab'>To read ({BOOKS.length - booksState.length})</Tab>
-						<Tab className='tab'>In progress ({getIndicesByState(booksState, 'inProgress').length})</Tab>
-						<Tab className='tab'>Done ({getIndicesByState(booksState, 'done').length})</Tab>
+						<Tab className='tab'>To read ({BOOKS.length - booksStateStorage.length})</Tab>
+						<Tab className='tab'>In progress ({getIndicesByState(booksStateStorage, 'inProgress').length})</Tab>
+						<Tab className='tab'>Done ({getIndicesByState(booksStateStorage, 'done').length})</Tab>
 					</TabList>
 
 					{filterTags.length ? <Filter tags={filterTags} /> : ''}
