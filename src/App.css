@@ -11,15 +11,20 @@ li {
 .App {
 	display: flex;
 	justify-content: center;
+	max-height: 100%;
+	min-height: 0px;
+	height: 100%;
 }
 
 .tabs {
 	display: flex;
 	flex-direction: column;
 	position: relative;
-	width: 800px;
-	margin: 25px 10px 0;
+	max-width: 800px;
+	width: 100%;
+	margin: 25px 10px;
 	border: 2px solid rgba(0, 0, 0, 0.5);
+	overflow: hidden;
 }
 
 .tabList {
@@ -28,6 +33,9 @@ li {
 }
 
 .tab {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	padding: 10px;
 	flex: 1 1 100px;
 	text-align: center;
@@ -48,9 +56,10 @@ li {
 }
 
 .tabPanel {
-	/* flex: 1 1 auto; */
-
-	overflow: hidden;
+	max-height: 100%;
+	min-height: 0px;
+	height: 100%;
+	overflow: auto hidden;
 }
 
 .content {
@@ -58,4 +67,25 @@ li {
 	width: 100%;
 	height: 100%;
 	display: none;
+}
+
+@media (max-width: 720px) {
+	.tabList {
+		font-size: 18px;
+	}
+}
+
+@media (max-width: 600px) {
+	.tab {
+		padding: 10px 5px;
+	}
+}
+
+@media (max-width: 400px) {
+	.tabList {
+		font-size: 16px;
+	}
+	.tab {
+		padding: 5px 5px;
+	}
 }

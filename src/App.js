@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import './App.css';
 import { useSearchParams } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Localbase from 'localbase';
-import { useCallback } from 'react/cjs/react.development';
 import Filter from './components/filterArea/Filter';
 import json from './30000-items.json';
 import Context from './context';
@@ -99,24 +98,30 @@ function App() {
 				filterTags,
 			}}>
 			<div className='App'>
-				<Tabs className='tabs' selectedTabClassName='selectedTab'>
+				<Tabs className='tabs' selectedTabClassName='selectedTab' selectedTabPanelClassName='tabPanel'>
 					<TabList className='tabList'>
-						<Tab className='tab'>To read ({BOOKS.length - booksStateStorage.length})</Tab>
-						<Tab className='tab'>In progress ({getIndicesByState(booksStateStorage, 'inProgress').length})</Tab>
-						<Tab className='tab'>Done ({getIndicesByState(booksStateStorage, 'done').length})</Tab>
+						<Tab className='tab'>
+							<span>To read ({BOOKS.length - booksStateStorage.length})</span>{' '}
+						</Tab>
+						<Tab className='tab'>
+							<span>In progress ({getIndicesByState(booksStateStorage, 'inProgress').length})</span>{' '}
+						</Tab>
+						<Tab className='tab'>
+							<span>Done ({getIndicesByState(booksStateStorage, 'done').length})</span>{' '}
+						</Tab>
 					</TabList>
 
 					{filterTags.length ? <Filter tags={filterTags} /> : ''}
 
-					<TabPanel className='tabPanel'>
+					<TabPanel>
 						<TabBooksContent books={getToReadBooks} action={transferToProgress} actionLabel={'start reading'} />
 					</TabPanel>
 
-					<TabPanel className='tabPanel'>
+					<TabPanel>
 						<TabBooksContent books={getInProgressBooks} action={transferToDone} actionLabel={'finish reading'} />
 					</TabPanel>
 
-					<TabPanel className='tabPanel'>
+					<TabPanel>
 						<TabBooksContent books={getDoneBooks} action={transferToRead} actionLabel={'read over'} />
 					</TabPanel>
 				</Tabs>

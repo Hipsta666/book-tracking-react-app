@@ -1,12 +1,14 @@
 .container {
 	display: flex;
+	align-items: center;
 	padding: 10px 20px;
 	align-items: center;
 	border-bottom: 2px solid rgba(0, 0, 0, 0.5);
 }
 
 .title {
-	flex: 0 0 200px;
+	margin-top: 10px;
+	margin-right: 20px;
 }
 
 .clear {
@@ -23,4 +25,25 @@
 	height: 2px;
 	width: transparent;
 	background: rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 720px) {
+	.container {
+		font-size: 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.container {
+		font-size: 18px;
+	}
+	.title {
+		margin-right: 10px;
+	}
+}
+
+@media (max-width: 400px) {
+	.container {
+		padding: 0 10px 10px 10px;
+	}
 }

@@ -8,8 +8,8 @@ const Filter = ({ tags }) => {
 	const { clearFilterTags, deleteFilterTag } = useContext(Context);
 	return (
 		<div className={classes.container}>
-			<span className={classes.title}>Filters by tags:</span>
 			<div className={tagsClasses.tags}>
+				<span className={classes.title}>Filters by tags:</span>
 				{tags.map((tag, index) => (
 					<div className={tagsClasses.tag} key={index} onClick={() => deleteFilterTag(tag)}>
 						{tag}

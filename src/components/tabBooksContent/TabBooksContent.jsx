@@ -1,27 +1,31 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useVirtual } from 'react-virtual';
 import Book from '../book/Book';
-import Context from '../../context';
+// import Context from '../../context';
 
-const calcListHeight = (marginBottom) => document.documentElement.clientHeight - marginBottom;
+// const calcListHeight = (marginBottom) => document.documentElement.clientHeight - marginBottom;
 
 const TabBooksContent = ({ books, action, actionLabel }) => {
-	const { filterTags } = useContext(Context);
+	// const { filterTags } = useContext(Context);
 	const parentRef = React.useRef();
 
 	const rowVirtualizer = useVirtual({
 		size: books.length,
 		parentRef,
 	});
-
+	// ${filterTags.length === 0 ? calcListHeight(100) : calcListHeight(175)}px
 	return (
-		<>
+		<div
+			style={{
+				maxHeight: '100%',
+				minHeight: '0px',
+				height: '100%',
+			}}>
 			<div
 				ref={parentRef}
 				style={{
-					height: `${filterTags.length === 0 ? calcListHeight(100) : calcListHeight(175)}px`,
-					width: '796px',
+					height: '100%',
 					overflow: 'auto',
 				}}>
 				<div
@@ -47,7 +51,7 @@ const TabBooksContent = ({ books, action, actionLabel }) => {
 					))}
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
 
