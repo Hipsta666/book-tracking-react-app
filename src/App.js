@@ -1,26 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './App.css';
+import { useSearchParams } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Localbase from 'localbase';
+import { useCallback } from 'react/cjs/react.development';
 import Filter from './components/filterArea/Filter';
 import json from './30000-items.json';
 import Context from './context';
-import Localbase from 'localbase';
 import TabBooksContent from './components/tabBooksContent/TabBooksContent';
-import { useSearchParams } from 'react-router-dom';
 
 const BOOKS = json.items;
 const db = new Localbase('db');
 db.config.debug = false;
-
 const getIndicesByState = (items, state) => items.filter((item) => item.state === state).map((item) => item.id);
 
 function App() {
 	const [filterTags, setFilterTags] = useState([]);
 	const [booksStateStorage, setBooksStateStorage] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams({});
-	const booksStateLength = booksStateStorage.length,
-		booksInProgressLength = getIndicesByState(booksStateStorage, 'inProgress'),
-		booksDoneLength = getIndicesByState(booksStateStorage, 'done');
 
 	const getBooks = () => {
 		db.collection('books')
@@ -35,7 +32,11 @@ function App() {
 	}, [setBooksStateStorage]);
 
 	useEffect(() => {
-		filterTags.length === 0 ? setSearchParams({}) : setSearchParams({ tags: filterTags.join('%') });
+		if (filterTags.length === 0) {
+			setSearchParams({});
+		} else {
+			setSearchParams({ tags: filterTags.join('%') });
+		}
 	}, [filterTags, setSearchParams]);
 
 	useEffect(() => {
@@ -50,7 +51,7 @@ function App() {
 
 	const toggleFilterTag = (tag) => (filterTags.includes(tag) ? deleteFilterTag(tag) : setFilterTags([...filterTags, tag]));
 
-	const getBookByTagFilter = (book) => filterTags.filter((tag) => book.tags.includes(tag)).length === filterTags.length;
+	const getBookByTagFilter = useCallback((book) => filterTags.filter((tag) => book.tags.includes(tag)).length === filterTags.length, [filterTags]);
 
 	const transferToProgress = (book) => {
 		db.collection('books').add({
@@ -72,16 +73,12 @@ function App() {
 		setBooksStateStorage(booksStateStorage.filter((item) => item.id !== book.id));
 	};
 
-	const getInProgressBooks = useMemo(() => {
-		return booksStateStorage.filter((book) => book.state === 'inProgress' && getBookByTagFilter(book));
-	}, [booksInProgressLength, filterTags, getBookByTagFilter]);
+	const getInProgressBooks = useMemo(() => booksStateStorage.filter((book) => book.state === 'inProgress' && getBookByTagFilter(book)), [booksStateStorage, getBookByTagFilter]);
 
-	const getDoneBooks = useMemo(() => {
-		return booksStateStorage.filter((book) => book.state === 'done' && getBookByTagFilter(book));
-	}, [booksDoneLength, filterTags, getBookByTagFilter]);
+	const getDoneBooks = useMemo(() => booksStateStorage.filter((book) => book.state === 'done' && getBookByTagFilter(book)), [getBookByTagFilter, booksStateStorage]);
 
 	const getToReadBooks = useMemo(() => {
-		let booksToRead = [];
+		const booksToRead = [];
 		const map = booksStateStorage.reduce((acc, book) => {
 			acc[book.id] = 1;
 			return acc;
@@ -90,12 +87,17 @@ function App() {
 		BOOKS.forEach((book) => {
 			if (!map[book.id] && getBookByTagFilter(book)) booksToRead.push(book);
 		});
-
 		return booksToRead;
-	}, [booksStateLength, getBookByTagFilter]);
+	}, [booksStateStorage, getBookByTagFilter]);
 
 	return (
-		<Context.Provider value={{ toggleFilterTag, deleteFilterTag, clearFilterTags, filterTags }}>
+		<Context.Provider
+			value={{
+				toggleFilterTag,
+				deleteFilterTag,
+				clearFilterTags,
+				filterTags,
+			}}>
 			<div className='App'>
 				<Tabs className='tabs' selectedTabClassName='selectedTab'>
 					<TabList className='tabList'>

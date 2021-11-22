@@ -1,12 +1,10 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useVirtual } from 'react-virtual';
 import Book from '../book/Book';
 import Context from '../../context';
-import { useVirtual } from 'react-virtual';
 
-const calcListHeight = (marginBottom) => {
-	return document.documentElement.clientHeight - marginBottom;
-};
+const calcListHeight = (marginBottom) => document.documentElement.clientHeight - marginBottom;
 
 const TabBooksContent = ({ books, action, actionLabel }) => {
 	const { filterTags } = useContext(Context);
@@ -23,7 +21,7 @@ const TabBooksContent = ({ books, action, actionLabel }) => {
 				ref={parentRef}
 				style={{
 					height: `${filterTags.length === 0 ? calcListHeight(100) : calcListHeight(175)}px`,
-					width: `796px`,
+					width: '796px',
 					overflow: 'auto',
 				}}>
 				<div

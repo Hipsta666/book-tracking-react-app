@@ -10,13 +10,11 @@ const Filter = ({ tags }) => {
 		<div className={classes.container}>
 			<span className={classes.title}>Filters by tags:</span>
 			<div className={tagsClasses.tags}>
-				{tags.map((tag, index) => {
-					return (
-						<div className={tagsClasses.tag} key={index} onClick={() => deleteFilterTag(tag)}>
-							{tag}
-						</div>
-					);
-				})}
+				{tags.map((tag, index) => (
+					<div className={tagsClasses.tag} key={index} onClick={() => deleteFilterTag(tag)}>
+						{tag}
+					</div>
+				))}
 				<div className={classes.clear} onClick={() => clearFilterTags()}>
 					(clear)
 				</div>
