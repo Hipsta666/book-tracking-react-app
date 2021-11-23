@@ -8,9 +8,12 @@
 
 .tag {
 	border: 2px solid rgba(0, 0, 0, 0.5);
+	background: rgb(233, 233, 233);
 	padding: 2px 8px;
 	margin-top: 10px;
 	cursor: pointer;
+	font-size: 20px;
+	user-select: none;
 }
 
 .tag:not(:last-child) {
@@ -19,4 +22,25 @@
 
 .activeFilterTag {
 	background: rgb(161, 193, 230);
+}
+
+@media (max-width: 720px) {
+	.tag {
+		font-size: 18px;
+	}
+}
+
+@media (max-width: 600px) {
+	.tag {
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 400px) {
+	.tag {
+		font-size: 14px;
+	}
+	.tags {
+		margin: 3px 0;
+	}
 }
