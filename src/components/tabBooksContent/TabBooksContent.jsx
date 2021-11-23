@@ -2,19 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useVirtual } from 'react-virtual';
 import Book from '../book/Book';
-// import Context from '../../context';
-
-// const calcListHeight = (marginBottom) => document.documentElement.clientHeight - marginBottom;
 
 const TabBooksContent = ({ books, action, actionLabel }) => {
-	// const { filterTags } = useContext(Context);
 	const parentRef = React.useRef();
 
 	const rowVirtualizer = useVirtual({
 		size: books.length,
 		parentRef,
+		estimateSize: React.useCallback(() => 260, []),
 	});
-	// ${filterTags.length === 0 ? calcListHeight(100) : calcListHeight(175)}px
 	return (
 		<div
 			style={{

@@ -4,31 +4,47 @@ import { useSearchParams } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Localbase from 'localbase';
 import Filter from './components/filterArea/Filter';
-import json from './30000-items.json';
 import Context from './context';
 import TabBooksContent from './components/tabBooksContent/TabBooksContent';
 
-const BOOKS = json.items;
 const db = new Localbase('db');
 db.config.debug = false;
+
 const getIndicesByState = (items, state) => items.filter((item) => item.state === state).map((item) => item.id);
 
 function App() {
+	const [BOOKS, SetBOOKS] = useState([]);
 	const [filterTags, setFilterTags] = useState([]);
 	const [booksStateStorage, setBooksStateStorage] = useState([]);
 	const [searchParams, setSearchParams] = useSearchParams({});
+	const [booksAlreadyRead, setBooksAlreadyRead] = useState([]);
 
 	const getBooks = () => {
+		fetch('./30000-items.json', {
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+		})
+			.then((response) => response.json())
+			.then((json) => {
+				SetBOOKS(json.items);
+			});
+	};
+
+	const getBooksFromDB = () => {
 		db.collection('books')
 			.get()
 			.then((items) => {
 				setBooksStateStorage(items);
+				setBooksAlreadyRead(getIndicesByState(items, 'read'));
 			});
 	};
 
 	useEffect(() => {
 		getBooks();
-	}, [setBooksStateStorage]);
+		getBooksFromDB();
+	}, []);
 
 	useEffect(() => {
 		if (filterTags.length === 0) {
@@ -57,19 +73,39 @@ function App() {
 			...book,
 			state: 'inProgress',
 		});
-		setBooksStateStorage([...booksStateStorage, { ...book, state: 'inProgress' }]);
+		db.collection('books')
+			.doc({ id: book.id, state: 'read' })
+			.get()
+			.then((item) => {
+				if (item) {
+					db.collection('books').doc({ id: book.id, state: 'read' }).delete();
+				}
+			});
+
+		setBooksStateStorage([...booksStateStorage.filter((item) => item.id !== book.id && item.state !== 'read'), { ...book, state: 'inProgress' }]);
+
+		setBooksAlreadyRead([...booksAlreadyRead.filter((id) => id !== book.id)]);
 	};
 
 	const transferToDone = (book) => {
-		db.collection('books').doc({ id: book.id }).update({
+		db.collection('books').doc({ id: book.id }).delete();
+		db.collection('books').add({
+			...book,
 			state: 'done',
 		});
-		setBooksStateStorage(booksStateStorage.map((item) => (item.id === book.id ? { ...item, state: 'done' } : item)));
+
+		setBooksStateStorage([...booksStateStorage.filter((item) => item.id !== book.id), { ...book, state: 'done' }]);
 	};
 
 	const transferToRead = (book) => {
 		db.collection('books').doc({ id: book.id }).delete();
-		setBooksStateStorage(booksStateStorage.filter((item) => item.id !== book.id));
+		db.collection('books').doc({ id: book.id }).delete();
+		db.collection('books').add({
+			...book,
+			state: 'read',
+		});
+		setBooksStateStorage([...booksStateStorage.filter((item) => item.id !== book.id), { ...book, state: 'read' }]);
+		setBooksAlreadyRead([...booksAlreadyRead, book.id]);
 	};
 
 	const getInProgressBooks = useMemo(() => booksStateStorage.filter((book) => book.state === 'inProgress' && getBookByTagFilter(book)), [booksStateStorage, getBookByTagFilter]);
@@ -79,15 +115,15 @@ function App() {
 	const getToReadBooks = useMemo(() => {
 		const booksToRead = [];
 		const map = booksStateStorage.reduce((acc, book) => {
-			acc[book.id] = 1;
+			acc[book.id] = book.state;
 			return acc;
 		}, {});
-
 		BOOKS.forEach((book) => {
-			if (!map[book.id] && getBookByTagFilter(book)) booksToRead.push(book);
+			if ((!map[book.id] && getBookByTagFilter(book)) || (map[book.id] === 'read' && getBookByTagFilter(book))) booksToRead.push(book);
 		});
+
 		return booksToRead;
-	}, [booksStateStorage, getBookByTagFilter]);
+	}, [booksStateStorage, getBookByTagFilter, BOOKS]);
 
 	return (
 		<Context.Provider
@@ -96,12 +132,13 @@ function App() {
 				deleteFilterTag,
 				clearFilterTags,
 				filterTags,
+				booksAlreadyRead,
 			}}>
 			<div className='App'>
 				<Tabs className='tabs' selectedTabClassName='selectedTab' selectedTabPanelClassName='tabPanel'>
 					<TabList className='tabList'>
 						<Tab className='tab'>
-							<span>To read ({BOOKS.length - booksStateStorage.length})</span>{' '}
+							<span>To read ({BOOKS.length - getIndicesByState(booksStateStorage, 'inProgress').length - getIndicesByState(booksStateStorage, 'done').length})</span>{' '}
 						</Tab>
 						<Tab className='tab'>
 							<span>In progress ({getIndicesByState(booksStateStorage, 'inProgress').length})</span>{' '}
@@ -118,11 +155,11 @@ function App() {
 					</TabPanel>
 
 					<TabPanel>
-						<TabBooksContent books={getInProgressBooks} action={transferToDone} actionLabel={'finish reading'} />
+						<TabBooksContent books={getInProgressBooks.reverse()} action={transferToDone} actionLabel={'finish reading'} />
 					</TabPanel>
 
 					<TabPanel>
-						<TabBooksContent books={getDoneBooks} action={transferToRead} actionLabel={'read over'} />
+						<TabBooksContent books={getDoneBooks.reverse()} action={transferToRead} actionLabel={'read over'} />
 					</TabPanel>
 				</Tabs>
 			</div>
