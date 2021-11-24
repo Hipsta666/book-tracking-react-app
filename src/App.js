@@ -99,7 +99,6 @@ function App() {
 
 	const transferToRead = (book) => {
 		db.collection('books').doc({ id: book.id }).delete();
-		db.collection('books').doc({ id: book.id }).delete();
 		db.collection('books').add({
 			...book,
 			state: 'read',
